@@ -1,0 +1,7 @@
+app/files
+venv
+__pycache__
+*.pyc
+.DS_store
+.env
+papers

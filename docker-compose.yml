@@ -1,0 +1,25 @@
+# services:
+#   backend:
+#     build: .
+#     image: backend_app
+#     container_name: fastapi_service
+#     ports:
+#       - "8000:8000"
+#     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+#     volumes:
+#       - .:/app
+#     env_file:
+#       - ./.env
+  
+###############
+services:
+  backend_service:
+    build: .
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    env_file:
+      - ./.env
