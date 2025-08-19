@@ -4,9 +4,16 @@ uvicorn==0.35.0
 
 # langchain
 langchain==0.3.27
-langchain-openai==0.3.30
-langgraph==0.6.5
 langchain-community==0.3.27
+langchain-openai==0.3.30
+langchain-google-genai==2.1.9
+langchain-postgres==0.0.15
+langgraph==0.6.5
+langgraph-checkpoint-postgres==2.0.23
+
+# postgres
+psycopg==3.2.9
+psycopg-binary==3.2.9
 
 # tools
 duckduckgo-search==8.1.1
