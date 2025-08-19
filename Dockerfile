@@ -22,6 +22,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-# This CMD is here for standalone Docker runs, but it will be overridden by the
-# 'command' in your docker-compose.yml when you use docker-compose up.
 CMD ["uvicorn", "app.main:app", "--host", "localhost", "--port", "8000"]
