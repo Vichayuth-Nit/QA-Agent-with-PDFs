@@ -21,9 +21,7 @@ logger = get_logger()
 conn_str = f"postgresql://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_db}"
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=openai_api_key)
 
-# TYPICAL USAGE WILL BE LIKE THIS
-# conn = Connection.connect(conn_str, autocommit=True)
-# checkpointer = PostgresSaver(conn)
+# ref: https://medium.com/@sajith_k/using-postgresql-with-langgraph-for-state-management-and-vector-storage-df4ca9d9b89e
 
 def get_connection() -> Connection:
     conn = Connection.connect(conninfo=conn_str, autocommit=True)
@@ -70,26 +68,19 @@ def get_embedded_docs_list():
 
 def setup_docs():
     """Set up PGvector and embedded documents in /papers at the same times"""
-    # Set up PGvector
-    vector_store = get_vector_store()
-    # get a list of already embedded files name to filtered the old file
-    embedded_doc_list = get_embedded_docs_list()
-    
-    logger_str = '- '+ '\n- '.join(embedded_doc_list)
-    logger.info(f"Already embedded documents: {logger_str}")
+    vector_store = get_vector_store() # setup PGvector
+    embedded_doc_list = get_embedded_docs_list() # get list of embedded documents for filtering
 
     if not os.path.exists("papers"):
         logger.warning("The 'papers' directory does not exist. No document will be added to the vector store.")
     else:
         raw_file_list = [os.path.join("papers", file) for file in os.listdir("papers") if file.endswith(".pdf")]
         file_list = [file for file in raw_file_list if file not in embedded_doc_list]
-        # log info
         logger.info(f"Files to be added: {file_list}")
         
         for file in file_list:
             chunks = ingest_pdf(file_path=file)
             vector_store.add_documents(chunks)
-            # log info
             logger.info(f"Added {len(chunks)} chunks from `{file}` to the vector store.")
 
 def clear_docs():
@@ -97,6 +88,7 @@ def clear_docs():
     vector_store = get_vector_store()
     vector_store.delete_collection()
 
+# No time to handle this yet!
 # def delete_docs(file_name: str):
 #     """Delete documents from the vector store by file name."""
 #     vector_store = get_vector_store()
