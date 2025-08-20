@@ -20,12 +20,12 @@ def classifier_node(state: AgentState) -> Dict[str, AIMessage]:
     if messages:
         human_message = classifier_user_prompt.format(user_query=[{"role": m.type, "content": m.content} for m in messages])
 
-    logger.info(f"\n\nHuman message: {human_message}\n")
+    # logger.info(f"\n\nHuman message: {human_message}\n")
 
     messages = [SystemMessage(content=classifier_sys_prompt), HumanMessage(content=human_message)]
     raw_response: VaugenessResponse = llm.invoke(messages)
     if raw_response.is_vague:
-        logger.info("\nResponse is vague!\n")
+        # logger.info("\nResponse is vague!\n")
         response = AIMessage(content=raw_response.response, is_vague=raw_response.is_vague)
         return {"messages": response}
 
@@ -36,7 +36,7 @@ def classifier_condition(state: AgentState) -> Literal["continue", "__end__"]:
     """
     last_message = state.get("messages", [])[-1]
     if isinstance(last_message, AIMessage) and hasattr(last_message, "is_vague"):
-        logger.info("\nGoing to END point!\n")
+        # logger.info("\nGoing to END point!\n")
         return "__end__"
     else:
         return "continue"

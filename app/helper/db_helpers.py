@@ -4,7 +4,6 @@ from psycopg import Connection
 from langgraph.checkpoint.postgres import PostgresSaver
 from langchain_postgres import PGVector
 from langchain_openai import OpenAIEmbeddings
-# from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 from app.config import settings, get_logger
 from app.helper.docs_ingester import ingest_pdf
@@ -66,7 +65,7 @@ def get_embedded_docs_list():
         
     return embedded_doc_list
 
-def setup_docs():
+def setup_db_and_docs():
     """Set up PGvector and embedded documents in /papers at the same times"""
     vector_store = get_vector_store() # setup PGvector
     embedded_doc_list = get_embedded_docs_list() # get list of embedded documents for filtering

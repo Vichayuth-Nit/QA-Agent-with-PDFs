@@ -18,8 +18,4 @@ def knowledge_base_search(query: Annotated[str, Field(description="The query to 
     
     vector_store = get_vector_store()
     results = vector_store.similarity_search_with_score(query=query, k=10)
-    # response_snippet = "\n".join([f"<Document_{i+1}>\ncontent: {result.page_content}\nrelevant_score: {score}\n</Document_{i+1}>" for i, (result, score) in enumerate(results)])
-    # response_message = ToolMessage(content=response_snippet, original_results=results)
-
-    # return response_message
     return results

@@ -15,7 +15,6 @@ postgres_port = settings.postgres_port
 postgres_db = settings.postgres_db
 
 logger = get_logger()
-# conn_str = f"postgresql+psycopg://{postgres_user}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_db}"
 
 def get_agent_graph():
     graph = StateGraph(AgentState)
