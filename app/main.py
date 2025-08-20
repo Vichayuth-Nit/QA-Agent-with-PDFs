@@ -18,6 +18,10 @@ logger = get_logger()
 
 # Check file existence and add to PGvector if not added yet
 setup_docs()
+checkpointer = get_checkpointer()
+checkpointer.setup()
+if not checkpointer.conn.closed:
+    checkpointer.conn.close()
 
 app = FastAPI(
     title="PDF-Agent-Chatbot API BY Vichayuth",
