@@ -1,12 +1,17 @@
-# pdfrag_agent
+# QA-Agent-with-PDFs
 
-A software agent for processing and analyzing PDFrag data.
+An multi-agent QA workflow with PDFs as RAG.
 
-## Features
+## How it work:
+This workflow consist of two agent: **QA agent** and **Classifier agent**
+- **Classifier agent**: An agent to classify user query from the conversation context. It will filter and ask back to user for clarification over their query. Any query that pass the classifier will going next to QA agent
+- **QA agent**: An agent expertise on question answering. It connect with 2 tool by default: knowledge_base_search and DuckDuckGoSearchResults
+    - knowledge_base_search: a tool connecting with PGvector service running in background. It will search for a chunk from given PDF files under directory `/papers` that user must prepared before launching service.
+    - DuckDuckGoSearchResults: a wrapper for internet search. Currently using as a temporary internet search tool.
 
-- Automated data ingestion and processing
-- Customizable analysis workflows
-- Extensible architecture for plugins and integrations
+The workflow will start from `classifier_node` to classify latest user query. If `classifier_node` classify the latest query as `vague`, it will generate response requesting user to clarify and get to END point. Otherwise, the graph will pass through `agent_node` next. `agent_node` (mentioned earlier as **QA agent**) will recieved user input and make reasoning by themself whether to use `knowledge_base_search` or `DuckDuckGoSearchResults` tool to acquired an answer. This agent however, will prioritize `knowledge_base_search` first as it has been set in its system prompt.
+
+Postgres service will always set up at start. While the pdf ingestion **will also happened at the start up as well**. Please always upload your pdf files to the directory `/papers` first before launching the docker-compsoe
 
 ## Installation
 
@@ -17,42 +22,18 @@ git clone https://github.com/yourusername/pdfrag_agent.git
 cd pdfrag_agent
 ```
 
-Install dependencies:
+Install dependencies (Optional):
 
 ```bash
 # If using Python
 pip install -r requirements.txt
-
-# If using Node.js
-npm install
 ```
 
-## Usage
+local dependencies is not necessary as this project was build for running with Docker
 
-Run the agent:
-
-```bash
-# Example for Python
-python main.py
-
-# Example for Node.js
-npm start
-```
-
-## Configuration
-
-Edit the configuration file (`config.yaml` or `.env`) to set up your environment and parameters.
-
-## Agent Structure
-
-The main logic is implemented in `agent.py`:
-
-- **Initialization**: Loads configuration and sets up resources.
-- **Processing**: Manages data ingestion, transformation, and analysis.
-- **Extensibility**: Supports plugins and custom modules.
-- **Main Loop**: Controls the agent lifecycle and task execution.
-
-See `agent.py` for details on classes and methods.
+**Always do these steps before going to the next step!**
+- add pdf files to the local directory /papers
+- change `.env_mock` file name to `.env` and add your own `OPENAI_API_KEYS`
 
 ## Running with Docker Compose
 
@@ -75,14 +56,11 @@ To run the agent using Docker Compose:
 
     ```bash
     docker-compose down
-    ```
 
-You can customize service configuration in `docker-compose.yml` as needed.
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the MIT License.
+## Possible Improvement in the future
+- Improve agent prompting and tools definition to improve agent accuracy.
+- Refactor: get rid of some unnecessary looping, unused import modules, and code quality for more robust speed.
+- Implement `evaluator_node` to improve response accuracy
+- Change llm model and embedding to more robust and up-to-date model; such as:
+    - `gpt-4.1-mini` or `gemini-2.5-flash` for LLM
+    - `BAAI/BGE-m3` or `gemini-embedding-001` for embedding
